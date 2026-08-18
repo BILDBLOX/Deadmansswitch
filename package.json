@@ -24,11 +24,26 @@
       "src/**/*",
       "package.json"
     ],
+    "directories": {
+      "buildResources": "build"
+    },
+    "publish": null,
     "win": {
+      "icon": "build/icon.ico",
       "target": [
         "portable",
         "nsis"
       ]
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "artifactName": "${productName} Setup ${version}.${ext}"
+    },
+    "portable": {
+      "artifactName": "${productName} Portable ${version}.${ext}"
     }
   }
 }

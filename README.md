@@ -72,6 +72,23 @@ This is a convenience tool, not a sandbox — it shells out to `taskkill`
 and `shutdown`, the same commands you could run yourself. Only add
 processes/actions you're comfortable having end instantly.
 
+## Get it (no build required)
+
+Grab the latest build from a [Release](../../releases) on this repo — two
+flavors, both single files, both just double-click-and-run:
+
+- **`Deadman's Switch Setup <version>.exe`** — one-click installer. Installs
+  to your user profile (no admin needed), adds a Start Menu entry and
+  desktop shortcut.
+- **`Deadman's Switch Portable <version>.exe`** — no install at all. Drop it
+  anywhere (even a USB stick) and double-click it to run.
+
+Both are unsigned (no code-signing certificate), so Windows SmartScreen will
+likely show a "Windows protected your PC" prompt the first time. Click
+**More info → Run anyway**. This is normal for small open-source tools
+without a paid certificate, not a sign anything is wrong — you can read
+every line of what it does right here in this repo.
+
 ## Requirements
 
 - Windows (uses `taskkill` and `shutdown`; process listing uses
@@ -94,8 +111,19 @@ npm run dist
 ```
 
 This uses [electron-builder](https://www.electron.build/) (configured in
-`package.json`) to produce a portable `.exe` and an NSIS installer in
-`dist/`.
+`package.json`) to produce, in `dist/`:
+
+- `Deadman's Switch Setup <version>.exe` — the one-click NSIS installer
+- `Deadman's Switch Portable <version>.exe` — the no-install portable build
+
+Both bundle their own Electron/Chromium runtime, so nothing else needs to
+be installed on the machine that runs them. The app icon lives at
+`build/icon.ico`.
+
+Building the Windows target from Linux/macOS needs [Wine](https://www.winehq.org/)
+installed (`wine` + `wine32`/`wine64` — used only to write the `.exe`'s
+icon and version info, nothing else). Building from Windows itself needs
+nothing extra.
 
 ## Using this in another project
 
