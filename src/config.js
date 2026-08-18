@@ -24,7 +24,10 @@ const DEFAULT_CONFIG = {
   // Used only when action === 'processes_dummy'
   dummyUrl: 'https://docs.google.com/document/u/0/',
   // Electron accelerator string. Must be registerable as a global shortcut.
-  hotkey: 'F3'
+  hotkey: 'F3',
+  // Klaxon while armed + thunk/blast sound effects. Purely a renderer-side
+  // preference — synthesized with Web Audio, no files to manage.
+  soundEnabled: true
 };
 
 function getConfigPath() {

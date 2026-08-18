@@ -15,6 +15,7 @@
         <span class="titlebar-title">DEADMAN'S SWITCH</span>
       </div>
       <div class="titlebar-actions">
+        <button id="muteBtn" class="icon-btn" title="Toggle sound" aria-label="Toggle sound">🔊</button>
         <button id="settingsBtn" class="icon-btn" title="Settings" aria-label="Settings">⚙</button>
         <button id="closeBtn" class="icon-btn icon-btn-danger" title="Close" aria-label="Close">✕</button>
       </div>
@@ -45,10 +46,14 @@
               <span class="blast-shield-led"></span>
               <span class="blast-shield-text">ARMED</span>
             </div>
+
+            <div class="shockwave" id="shockwave" aria-hidden="true"></div>
           </div>
         </div>
 
-        <div class="readout" id="readout">LIFT COVER TO BEGIN</div>
+        <div class="readout" id="readout">
+          <span id="readoutText">LIFT COVER TO BEGIN</span><span class="readout-cursor" id="readoutCursor">▋</span>
+        </div>
 
         <button id="disarmBtn" class="ghost-btn" hidden>DISARM</button>
       </div>
@@ -135,6 +140,7 @@
     </div>
   </div>
 
+  <script src="audio.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

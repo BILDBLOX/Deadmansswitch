@@ -1,15 +1,19 @@
 'use strict';
 
 (() => {
+  const appFrame = document.querySelector('.app-frame');
   const hatchWrap = document.getElementById('hatchWrap');
   const hatchLid = document.getElementById('hatchLid');
   const coreButton = document.getElementById('coreButton');
   const readout = document.getElementById('readout');
+  const readoutText = document.getElementById('readoutText');
   const disarmBtn = document.getElementById('disarmBtn');
   const statusPill = document.getElementById('statusPill');
   const hotkeyLabel = document.getElementById('hotkeyLabel');
   const triggerFlash = document.getElementById('triggerFlash');
+  const shockwave = document.getElementById('shockwave');
   const closeBtn = document.getElementById('closeBtn');
+  const muteBtn = document.getElementById('muteBtn');
 
   const settingsBtn = document.getElementById('settingsBtn');
   const footerSettingsLink = document.getElementById('footerSettingsLink');
@@ -31,6 +35,20 @@
   let selected = new Set();
   let state = 'locked'; // locked | ready | armed | triggered
 
+  // ---------------- Readout typewriter ----------------
+
+  let typeTimer = null;
+  function typeReadout(text, speed = 20) {
+    clearInterval(typeTimer);
+    let i = 0;
+    readoutText.textContent = '';
+    typeTimer = setInterval(() => {
+      i++;
+      readoutText.textContent = text.slice(0, i);
+      if (i >= text.length) clearInterval(typeTimer);
+    }, speed);
+  }
+
   // ---------------- Main switch state machine ----------------
 
   function setState(next) {
@@ -43,34 +61,44 @@
     statusPill.textContent = { locked: 'LOCKED', ready: 'READY', armed: 'ARMED', triggered: 'TRIGGERED' }[next];
 
     readout.className = 'readout' + (next === 'armed' ? ' readout-armed' : next === 'triggered' ? ' readout-triggered' : '');
-    readout.textContent = {
+    typeReadout({
       locked: 'LIFT COVER TO BEGIN',
       ready: 'PRESS THE BUTTON TO ARM',
       armed: `ARMED — PRESS ${config?.hotkey || 'F3'} TO TRIGGER · DISARM TO CANCEL`,
       triggered: 'EXECUTING…'
-    }[next];
+    }[next], next === 'triggered' ? 35 : 20);
   }
 
   hatchLid.addEventListener('click', () => {
-    if (state === 'locked') setState('ready');
+    if (state === 'locked') {
+      window.dmsAudio.playCoverOpen();
+      setState('ready');
+    }
   });
   hatchLid.addEventListener('keydown', (e) => {
-    if (state === 'locked' && (e.key === 'Enter' || e.key === ' ')) setState('ready');
+    if (state === 'locked' && (e.key === 'Enter' || e.key === ' ')) {
+      window.dmsAudio.playCoverOpen();
+      setState('ready');
+    }
   });
 
   coreButton.addEventListener('click', async () => {
     if (state !== 'ready') return;
     const ok = await window.api.arm(config?.hotkey || 'F3');
     if (ok) {
+      window.dmsAudio.playThunk();
+      window.dmsAudio.startKlaxon();
       setState('armed');
     } else {
-      readout.textContent = 'COULD NOT REGISTER HOTKEY — CHECK IT ISN’T USED ELSEWHERE';
+      typeReadout('COULD NOT REGISTER HOTKEY — CHECK IT ISN’T USED ELSEWHERE');
     }
   });
 
   async function doDisarm() {
     if (state !== 'armed') return;
     await window.api.disarm();
+    window.dmsAudio.stopKlaxon();
+    window.dmsAudio.playDisarm();
     setState('locked');
   }
   disarmBtn.addEventListener('click', doDisarm);
@@ -84,10 +112,21 @@
 
   window.api.onTriggered(() => {
     setState('triggered');
+    window.dmsAudio.playTriggerBlast();
     triggerFlash.classList.add('flash-active');
+    shockwave.classList.add('active');
+    appFrame.classList.add('shake');
+    setTimeout(() => appFrame.classList.remove('shake'), 500);
   });
 
   closeBtn.addEventListener('click', () => window.api.closeWindow());
+
+  muteBtn.addEventListener('click', async () => {
+    const soundEnabled = !(config?.soundEnabled ?? true);
+    config = await window.api.saveConfig({ soundEnabled });
+    window.dmsAudio.setEnabled(soundEnabled);
+    muteBtn.textContent = soundEnabled ? '🔊' : '🔇';
+  });
 
   // ---------------- Settings ----------------
 
@@ -266,6 +305,8 @@
   async function init() {
     config = await window.api.getConfig();
     hotkeyLabel.textContent = config.hotkey;
+    window.dmsAudio.setEnabled(config.soundEnabled ?? true);
+    muteBtn.textContent = (config.soundEnabled ?? true) ? '🔊' : '🔇';
     populateSettingsForm();
     setState('locked');
   }
