@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;" />
+  <title>Deadman's Switch</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-frame">
+
+    <header class="titlebar">
+      <div class="titlebar-drag">
+        <span class="titlebar-dot"></span>
+        <span class="titlebar-title">DEADMAN'S SWITCH</span>
+      </div>
+      <div class="titlebar-actions">
+        <button id="settingsBtn" class="icon-btn" title="Settings" aria-label="Settings">⚙</button>
+        <button id="closeBtn" class="icon-btn icon-btn-danger" title="Close" aria-label="Close">✕</button>
+      </div>
+    </header>
+
+    <div class="status-row">
+      <span id="statusPill" class="status-pill status-locked">LOCKED</span>
+      <span id="hotkeyHint" class="hotkey-hint">trigger key: <b id="hotkeyLabel">F3</b></span>
+    </div>
+
+    <main class="console">
+      <div class="console-panel">
+        <div class="hazard-strip" aria-hidden="true"></div>
+
+        <div class="hatch-wrap" id="hatchWrap">
+          <div class="hatch-ring">
+            <button class="core-button" id="coreButton" disabled aria-label="Arm switch">
+              <span class="core-button-face">
+                <span class="core-button-label">ARM</span>
+              </span>
+            </button>
+
+            <div class="hatch-lid" id="hatchLid" role="button" tabindex="0" aria-label="Lift safety cover">
+              <span class="hatch-lid-grip"></span>
+            </div>
+
+            <div class="blast-shield" id="blastShield" aria-hidden="true">
+              <span class="blast-shield-led"></span>
+              <span class="blast-shield-text">ARMED</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="readout" id="readout">LIFT COVER TO BEGIN</div>
+
+        <button id="disarmBtn" class="ghost-btn" hidden>DISARM</button>
+      </div>
+    </main>
+
+    <footer class="footer-note">
+      Closes only what you configure. System-critical processes can never be selected. ·
+      <button id="footerSettingsLink" class="link-btn">configure</button>
+    </footer>
+  </div>
+
+  <div class="trigger-flash" id="triggerFlash" aria-hidden="true"></div>
+
+  <div class="settings-overlay" id="settingsOverlay" hidden>
+    <div class="settings-panel">
+      <div class="settings-header">
+        <h2>Configure</h2>
+        <button id="settingsCloseBtn" class="icon-btn" aria-label="Close settings">✕</button>
+      </div>
+
+      <nav class="tabs">
+        <button class="tab-btn active" data-tab="processes">Processes</button>
+        <button class="tab-btn" data-tab="action">Action</button>
+        <button class="tab-btn" data-tab="hotkey">Hotkey</button>
+      </nav>
+
+      <section class="tab-panel" id="tab-processes">
+        <p class="panel-help">Pick what the switch is allowed to close. Add anything by its process name
+          (as Task Manager shows it, e.g. <code>chrome.exe</code>). System-critical processes are hidden here —
+          they can never be added, no matter what.</p>
+
+        <div class="field-row">
+          <input type="text" id="customProcessInput" placeholder="e.g. discord.exe" />
+          <button id="addProcessBtn" class="secondary-btn">Add</button>
+        </div>
+
+        <div class="process-section">
+          <div class="process-section-title">Selected</div>
+          <ul id="selectedProcessList" class="process-list"></ul>
+        </div>
+
+        <div class="process-section">
+          <div class="process-section-title-row">
+            <span class="process-section-title">Currently running</span>
+            <button id="refreshProcessesBtn" class="link-btn">refresh</button>
+          </div>
+          <ul id="runningProcessList" class="process-list scrollable"></ul>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="tab-action" hidden>
+        <p class="panel-help">The selected processes above always close first. Choose what happens next.</p>
+        <label class="radio-row">
+          <input type="radio" name="action" value="processes" />
+          <span>Close selected apps only</span>
+        </label>
+        <label class="radio-row">
+          <input type="radio" name="action" value="processes_signout" />
+          <span>Close selected apps, then sign out</span>
+        </label>
+        <label class="radio-row">
+          <input type="radio" name="action" value="processes_shutdown" />
+          <span>Close selected apps, then shut down the PC</span>
+        </label>
+        <label class="radio-row">
+          <input type="radio" name="action" value="processes_dummy" />
+          <span>Close selected apps, then open a fullscreen decoy tab</span>
+        </label>
+        <div class="field-row indent" id="dummyUrlRow">
+          <input type="text" id="dummyUrlInput" placeholder="https://docs.google.com/document/u/0/" />
+        </div>
+      </section>
+
+      <section class="tab-panel" id="tab-hotkey" hidden>
+        <p class="panel-help">The switch only fires when this key is pressed <em>after</em> arming — press it
+          any other time and nothing happens. Click the box and press a key or combo to change it.</p>
+        <button id="hotkeyCapture" class="hotkey-capture">F3</button>
+      </section>
+
+      <div class="settings-footer">
+        <span id="settingsStatus" class="settings-status"></span>
+        <button id="settingsSaveBtn" class="primary-btn">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+{
+  "name": "deadmans-switch",
+  "productName": "Deadman's Switch",
+  "version": "1.0.0",
+  "description": "An animated, physical-feeling 'dead man's switch' for your desktop. Lift the safety cover, arm the launch button, then confirm with a global hotkey to instantly close chosen apps, sign out, shut down, or throw up a decoy fullscreen tab.",
+  "main": "main.js",
+  "author": "BILDBLOX",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.bildblox.deadmansswitch",
+    "productName": "Deadman's Switch",
+    "files": [
+      "main.js",
+      "preload.js",
+      "src/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "portable",
+        "nsis"
+      ]
+    }
+  }
+}
