@@ -417,6 +417,13 @@ html, body {
   justify-content: center;
   z-index: 40;
 }
+/* An author rule of equal specificity beats the browser's own
+   [hidden] { display: none }, so without this override the panel
+   would stay display:flex — and thus visible and click-blocking —
+   forever, no matter what the `hidden` attribute is set to. */
+.settings-overlay[hidden] {
+  display: none;
+}
 
 .settings-panel {
   width: 420px;

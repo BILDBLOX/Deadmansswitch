@@ -1,7 +1,7 @@
 {
   "name": "deadmans-switch",
   "productName": "Deadman's Switch",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An animated, physical-feeling 'dead man's switch' for your desktop. Lift the safety cover, arm the launch button, then confirm with a global hotkey to instantly close chosen apps, sign out, shut down, or throw up a decoy fullscreen tab.",
   "main": "main.js",
   "author": "BILDBLOX",

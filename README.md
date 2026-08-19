@@ -74,8 +74,8 @@ processes/actions you're comfortable having end instantly.
 
 ## Get it (no build required)
 
-Grab the latest build from a [Release](../../releases) on this repo — two
-flavors, both single files, both just double-click-and-run:
+Grab the latest build from [`releases/v1.0.1/`](releases/v1.0.1/) in this
+repo — two flavors, both single files, both just double-click-and-run:
 
 - **`Deadman's Switch Setup <version>.exe`** — one-click installer. Installs
   to your user profile (no admin needed), adds a Start Menu entry and
